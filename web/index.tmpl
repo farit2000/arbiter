@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Arbiter</title>
+</head>
+<body>
+<h2>
+    Сервис наложения метки времени на хеш
+</h2>
+<p>
+    Пример GET запроса:
+</p>
+<p>
+    <a href='http://188.93.211.195:8080/ts?digest=30820277020100300d06092a864886f70d010101050004820261302025'>
+    http://188.93.211.195:8080/ts?digest=30820277020100300d06092a864886f70d010101050004820261302025</a>
+<p>Хеш передаётся через параметр <span class="fnt">digest</span>. Хеш записывается как HEX строка</p>
+<p>
+    Возвращается JSON объект:
+<div class="fnt">
+    &nbsp;&nbsp;{<br>
+    &nbsp;&nbsp;&nbsp;"status":0,<br>
+    &nbsp;&nbsp;&nbsp;"statusString":"",<br>
+    &nbsp;&nbsp;&nbsp;"timeStampToken":<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ts":"2021-10-16T06:51:32.10+03",<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"signature":"58332a8d111fa2a09e2fb ..."<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+    &nbsp;&nbsp;}
+</div>
+<p>При успешном выполнении запроса значение <span class="fnt">stаstus = 0</span>, <span class="fnt">statusString</span> используется для описании ошибки, при этом <span class="fnt">status &#8800; 0</span>
+<p><span class="fnt">timeStampToken</span> содержит метку времени <span class="fnt">ts</span> в явном виде в формате <span class="fnt">yyyy-MM-dd'T'HH:mm:ss.SX (2021-10-16T06:51:32.10+03)</span>
+<p><span class="fnt">signature</span> - подпись в формате HEX строки. Подпись накладывается на метку времени
+    объединённую с переданным значением хеша.
+</p>Для объединения с хешем метка времени в строковом представлении (массив символов) преобразуется в массив байт.
+<p> <span class="fnt">("2021-10-16T06:51:32.10+03").getByteArray <span style="font-size: 120%">&#8746;</span> digest.asByteArray &#10230; signature</span>
+    <br>
+<p>Алгоритм ключа: <a href="https://ru.wikipedia.org/wiki/RSA">RSA</a> размер ключа 512</p>
+<p>Алгоритм подписи: <a href="https://ru.wikipedia.org/wiki/RSASSA-PSS">PSS</a></p>
+<br>
+<p>Public key:</p>
+<p><a href='http://188.93.211.195:8080/public'>http://188.93.211.195:8080/public</a></p>
+<p>Private key(но он не нужен для валидации, только что бы поглядеть на него): </p>
+<p><a href='http://188.93.211.195:8080/private'>http://188.93.211.195:8080/private</a></p>
+<p>
+    Ссылка которая поможет проверить, правильно ли у вас создается хэш на основе digest и timestamp. <br>
+    Для того чтобы передать значения воспользуйтесь для ts <a href="https://string-functions.com/urlencode.aspx">encode url string</a>
+</p>
+<p><a href='http://188.93.211.195:8080/ts_and_hash_hex?ts=2021-10-21T12%3A22%3A28.622%2B12&digest=30820277020100300d06092a864886f70d010101050004820261302025'>http://188.93.211.195:8080/ts_and_hash_hex?ts=2021-10-21T12%3A22%3A28.622%2B12&digest=30820277020100300d06092a864886f70d010101050004820261302025</a></p>
+<p>
+    Ссылка которая поможет проверить, валидацию хэша с помощью подписи. В задании нужно это делать самому. Это только для помощи в разработке <br>
+</p>
+<p><a href='http://188.93.211.195:8080/verify?sign=2dec5aee154d200910ed1e7b063d115c6352dcdf6ced17eb5efe00a0be459c6e12622b246141390e1250218ccbabcf2a09154284fe8598300bc0981d51a274ef&digest=323032312d31302d32315431323a32323a32382e3632322b313230820277020100300d06092a864886f70d010101050004820261302025'>http://188.93.211.195:8080/verify?sign=2dec5aee154d200910ed1e7b063d115c6352dcdf6ced17eb5efe00a0be459c6e12622b246141390e1250218ccbabcf2a09154284fe8598300bc0981d51a274ef&digest=323032312d31302d32315431323a32323a32382e3632322b313230820277020100300d06092a864886f70d010101050004820261302025</a></p>
+
+<p>Private key(но он не нужен для валидации, только что бы поглядеть на него): </p>
+<p><a href='http://188.93.211.195:8080/private'>http://188.93.211.195:8080/private</a></p>
+</body>
+</html>
